@@ -1,8 +1,7 @@
 #include "sort_functions.h"
 
-#define RECORD_LENGTH 50
+#define RECORD_LENGTH 100
 #define PRINT_PROGRESS 0
-
 
 struct sort_timer_t {
   double selection_time;
@@ -22,7 +21,7 @@ int* create_array(const int *length) {
         return NULL;
 
     int *keys = (int*) malloc(*length * sizeof(int));
-    //füllt einen Speicherbereich, welche wir später als Array adressieren können mit Zufallszahlen
+    // füllt einen Speicherbereich, welche wir später als Array adressieren können mit Zufallszahlen
     for (int i = 0; i < *length; i++) {
         keys[i] = rand() % 70000;
     }
@@ -31,7 +30,7 @@ int* create_array(const int *length) {
 }
 
 void free_bulk(int **record_array) {
-    //wendet den Free Befehl auf elle Arrays in einem zweidimensionalen Array an
+    // wendet den Free Befehl auf elle Arrays in einem zweidimensionalen Array an
 
     for (size_t i = 0; i < RECORD_LENGTH; i++) {
         free(*(record_array + i));
@@ -39,14 +38,13 @@ void free_bulk(int **record_array) {
 }
 
 void sort_records(int **record_array, const int *length) {
+
+}
+
+double sort_records_selection_sort(int **record_array, const int *length) {
     clock_t start, end;
-    SortTimer times;
-
-    times.selection_time = 0;
-    times.insertion_time = 0;
-    times.quick_time = 0;
-    times.qsort_time = 0;
-
+    double time = 0.0;
+    double selection_time_values[RECORD_LENGTH];
 
     /* Routine fuer Selectionsort bzw. Sortieren durch Auswahl */
     for (int i = 0; i < RECORD_LENGTH; i++) {
@@ -58,18 +56,25 @@ void sort_records(int **record_array, const int *length) {
         end = clock();
 
         /* Die durch clock() gemessene Zeit */
-        times.selection_time_values[i] = ((double) (end - start)) / CLOCKS_PER_SEC;
-        times.selection_time += times.selection_time_values[i];
+        selection_time_values[i] = ((double) (end - start)) / CLOCKS_PER_SEC;
+        time += selection_time_values[i];
 
         if (PRINT_PROGRESS)
             printf("selectionsort\t\t Arraylaenge: %d  Datensatz Nummer: %d\n", *length, i);
     }
     free_bulk(record_array);
     /* Berechnung der mittleren Zeit, um die totale Zeit zu erhalten auskommentieren */
-    times.selection_time /= RECORD_LENGTH;
+    time /= RECORD_LENGTH;
 
+    return time;
+}
 
-    // Routine fuer Insertionsort bzw. Sortieren durch Einfuegen
+double sort_records_insertion_sort(int **record_array, const int *length) {
+    clock_t start, end;
+    double time = 0.0;
+    double selection_time_values[RECORD_LENGTH];
+
+    /* Routine fuer Selectionsort bzw. Sortieren durch Auswahl */
     for (int i = 0; i < RECORD_LENGTH; i++) {
         record_array[i] = create_array(length);
     }
@@ -78,17 +83,26 @@ void sort_records(int **record_array, const int *length) {
         insertion_sort(record_array[i], length);
         end = clock();
 
-        times.insertion_time_values[i] = ((double) (end - start)) / CLOCKS_PER_SEC;
-        times.insertion_time += times.insertion_time_values[i];
+        /* Die durch clock() gemessene Zeit */
+        selection_time_values[i] = ((double) (end - start)) / CLOCKS_PER_SEC;
+        time += selection_time_values[i];
 
         if (PRINT_PROGRESS)
-            printf("Insertionsort\t Arraylaenge: %d  Datensatz Nummer: %d\n", *length, i);
+            printf("selectionsort\t\t Arraylaenge: %d  Datensatz Nummer: %d\n", *length, i);
     }
     free_bulk(record_array);
-    times.insertion_time /= RECORD_LENGTH;
+    /* Berechnung der mittleren Zeit, um die totale Zeit zu erhalten auskommentieren */
+    time /= RECORD_LENGTH;
 
+    return time;
+}
 
-    // Routine fuer Quicksort
+double sort_records_quick_sort(int **record_array, const int *length) {
+    clock_t start, end;
+    double time = 0.0;
+    double selection_time_values[RECORD_LENGTH];
+
+    /* Routine fuer Selectionsort bzw. Sortieren durch Auswahl */
     for (int i = 0; i < RECORD_LENGTH; i++) {
         record_array[i] = create_array(length);
     }
@@ -97,15 +111,24 @@ void sort_records(int **record_array, const int *length) {
         quick_sort(record_array[i], 0, *length - 1);
         end = clock();
 
-        times.quick_time_values[i] = ((double) (end - start)) / CLOCKS_PER_SEC;
-        times.quick_time += times.quick_time_values[i];
+        /* Die durch clock() gemessene Zeit */
+        selection_time_values[i] = ((double) (end - start)) / CLOCKS_PER_SEC;
+        time += selection_time_values[i];
 
         if (PRINT_PROGRESS)
-            printf("Quicksort\t\t Arraylaenge: %d  Datensatz Nummer: %d\n", *length, i);
+            printf("selectionsort\t\t Arraylaenge: %d  Datensatz Nummer: %d\n", *length, i);
     }
     free_bulk(record_array);
-    times.quick_time /= RECORD_LENGTH;
+    /* Berechnung der mittleren Zeit, um die totale Zeit zu erhalten auskommentieren */
+    time /= RECORD_LENGTH;
 
+    return time;
+}
+
+double sort_records_qsort(int **record_array, const int *length) {
+    clock_t start, end;
+    double time = 0.0;
+    double time_values[RECORD_LENGTH];
 
     // Routine fuer qsort (C-Bibliotheksfunktion)
     for (int i = 0; i < RECORD_LENGTH; i++) {
@@ -117,60 +140,43 @@ void sort_records(int **record_array, const int *length) {
         qsort(record_array[i], *length, sizeof(int), compare_function);
         end = clock();
 
-        times.qsort_time_values[i] = ((double) (end - start)) / CLOCKS_PER_SEC;
-        times.qsort_time += times.qsort_time_values[i];
+        time_values[i] = ((double) (end - start)) / CLOCKS_PER_SEC;
+        time += time_values[i];
 
         if (PRINT_PROGRESS)
             printf("Quicksort\t\t Arraylaenge: %d  Datensatz Nummer: %d\n", *length, i);
     }
     free_bulk(record_array);
-    times.qsort_time /= RECORD_LENGTH;
+    time /= RECORD_LENGTH;
 
-
-    printf("%f %f %f %f\n", times.selection_time, times.insertion_time, times.quick_time, times.qsort_time);
-
+    return 0.0;
 }
 
-void run() {
-    const int lengths[6] = {20, 100, 1000, 10000, 20000, 50000};
-    const int *length_ptr = &lengths[0];
-
-    int *records_20[RECORD_LENGTH];
-
-    for (int i = 0; i < 3; i++) {
-        records_20[i] = create_array(length_ptr);
-    }
-    selection_sort_verbose(records_20[0], length_ptr);
-    insertion_sort_verbose(records_20[1], length_ptr);
-    quick_sort_verbose(records_20[2], 0, 19);
-    print_array(records_20[2], 0, 19, "Endergebnis Quicksort");
-
-    free(records_20[0]);
-    free(records_20[1]);
-    free(records_20[2]);
-
+void run(int sort_type, int length) {
     /* Berechnung des Laufzeitverhaltens */
-    int *records_100[RECORD_LENGTH];
-    sort_records(records_100, length_ptr+1);
+    int *records[RECORD_LENGTH];
+    double time = 0.0;
 
-    int *records_1000[RECORD_LENGTH];
-    sort_records(records_1000, length_ptr+2);
+    switch(sort_type) {
+        case 0: time = sort_records_selection_sort(records, &length); break;
+        case 1: time = sort_records_insertion_sort(records, &length); break;
+        case 2: time = sort_records_quick_sort(records, &length); break;
+        case 3: time = sort_records_qsort(records, &length); break;
+        default: printf("Nothing was executed"); break;
+    }
 
-    int *records_10000[RECORD_LENGTH];
-    sort_records(records_10000, length_ptr+3);
-
-    int *records_20000[RECORD_LENGTH];
-    sort_records(records_20000, length_ptr+4);
-
-    int *records_50000[RECORD_LENGTH];
-    sort_records(records_50000, length_ptr+5);
-
+    printf("Time: %fs\n", time);
 }
 
-int main() {
+int main(int argc, char **argv) {
+    /* arguments: 
+     * 0,1,2 -> selectionsort, insertionsort, quicksort
+     * int -> length of array to sort
+     */
     /* nur einmal aufrufen, fuer die Zufallszahlen */
     srand((unsigned) time(NULL));
-    run();
+    
+    run(atoi(argv[1]), atoi(argv[2]));
 
     return EXIT_SUCCESS;
 }
