@@ -3,18 +3,6 @@
 #define RECORD_LENGTH 100
 #define PRINT_PROGRESS 0
 
-struct sort_timer_t {
-  double selection_time;
-  double insertion_time;
-  double quick_time;
-  double qsort_time;
-  double selection_time_values[RECORD_LENGTH];
-  double insertion_time_values[RECORD_LENGTH];
-  double quick_time_values[RECORD_LENGTH];
-  double qsort_time_values[RECORD_LENGTH];
-};
-typedef struct sort_timer_t SortTimer;
-
 int* create_array(const int *length) {
 
     if (*length == 0)
@@ -97,7 +85,7 @@ double sort_records_insertion_sort(int **record_array, const int *length) {
     return time;
 }
 
-double sort_records_quick_sort(int **record_array, const int *length) {
+void sort_records_quick_sort(int **record_array, const int *length) {
     clock_t start, end;
     double time = 0.0;
     double selection_time_values[RECORD_LENGTH];
@@ -125,8 +113,7 @@ double sort_records_quick_sort(int **record_array, const int *length) {
     return time;
 }
 
-double sort_records_qsort(int **record_array, const int *length) {
-    clock_t start, end;
+void sort_records_qsort(int **record_array, const int *length) {
     double time = 0.0;
     double time_values[RECORD_LENGTH];
 
@@ -135,34 +122,25 @@ double sort_records_qsort(int **record_array, const int *length) {
         record_array[i] = create_array(length);
     }
     for (int i = 0; i < RECORD_LENGTH; i++) {
-        start = clock();
         /*qsort benötigt ein Array, dess Laenge, die Größe des Datentypes, und eine Vergleichsfunktion*/
         qsort(record_array[i], *length, sizeof(int), compare_function);
-        end = clock();
-
-        time_values[i] = ((double) (end - start)) / CLOCKS_PER_SEC;
-        time += time_values[i];
 
         if (PRINT_PROGRESS)
             printf("Quicksort\t\t Arraylaenge: %d  Datensatz Nummer: %d\n", *length, i);
     }
     free_bulk(record_array);
     time /= RECORD_LENGTH;
-
-    return 0.0;
 }
 
 void run(int sort_type, int length) {
     /* Berechnung des Laufzeitverhaltens */
     int *records[RECORD_LENGTH];
-    double time = 0.0;
 
     switch(sort_type) {
-        case 0: time = sort_records_selection_sort(records, &length); break;
-        case 1: time = sort_records_insertion_sort(records, &length); break;
-        case 2: time = sort_records_quick_sort(records, &length); break;
-        case 3: time = sort_records_qsort(records, &length); break;
-        default: printf("Nothing was executed"); break;
+        case 0: sort_records_selection_sort(records, &length); break;
+        case 1: sort_records_insertion_sort(records, &length); break;
+        case 2: sort_records_quick_sort(records, &length); break;
+        case 3: sort_records_qsort(records, &length); break;
     }
 
     printf("Time: %fs\n", time);
