@@ -7,7 +7,7 @@ LDFLAGS=-lm -lc
 all: sort
 
 sort:
-	$(CC) $(CFLAGS) main.c sort_functions.h -o sort $(LDFLAGS)
+	$(CC) $(CFLAGS) main.c sort_functions.h -o sorting $(LDFLAGS)
 
 clean:
 	rm -rf *.o *.gch
