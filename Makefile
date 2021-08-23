@@ -1,12 +1,12 @@
 .PHONY: clean
 
 CC=gcc
-CFLAGS=-Wall -std=c99 -pedantic -g
+CFLAGS=-Wall -std=c99 -pedantic -g -O0
 LDFLAGS=-lm -lc
 
-all: sort
+all: sorting
 
-sort:
+sorting:
 	$(CC) $(CFLAGS) main.c sort_functions.h -o sorting $(LDFLAGS)
 
 clean:
