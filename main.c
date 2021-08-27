@@ -100,7 +100,7 @@ int main(int argc, char **argv) {
      * int -> length of array to sort
      */
     /* nur einmal aufrufen, fuer die Zufallszahlen */
-    srand((unsigned) time(NULL));
+    srand((unsigned) 42);
     
     run(atoi(argv[1]), atoi(argv[2]));
 
